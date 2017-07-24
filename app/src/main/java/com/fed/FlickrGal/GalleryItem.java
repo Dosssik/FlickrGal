@@ -1,18 +1,13 @@
 package com.fed.FlickrGal;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Created by f on 24.07.2017.
  */
 
-public class PhotoItem {
+public class GalleryItem {
 
-    @SerializedName("title")
     private String mTitle;
-    @SerializedName("id")
     private String mId;
-
     private String mUrl;
 
 

@@ -3,11 +3,6 @@ package com.fed.FlickrGal;
 import android.net.Uri;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.SerializedName;
-import com.google.gson.reflect.TypeToken;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,9 +53,8 @@ public class FlickrFetcher {
     }
 
 
-    public ArrayList<PhotoItem> fetchItems() {
-        ArrayList<PhotoItem> photos = new ArrayList<>();
-//        Gson gson = new GsonBuilder().create();
+    public ArrayList<GalleryItem> fetchItems() {
+        ArrayList<GalleryItem> items = new ArrayList<>();
 
         try {
             String url = Uri.parse("https://api.flickr.com/services/rest/")
@@ -74,31 +68,25 @@ public class FlickrFetcher {
                     .toString();
             String jsonString = getUrlString(url);
             JSONObject jsonBody = new JSONObject(jsonString);
-            parseItems(photos, jsonBody);
-
-//            ResponseItem resp;
-//            resp = gson.fromJson(jsonString, ResponseItem.class);
-//            ArrayList<PhotoItem> respL = resp.getPhotoList();
+            parseItems(items, jsonBody);
 
             Log.i(TAG, "Received JSON: " + jsonString);
-            Log.i(TAG, "Received ITEMS: " + photos);
-//            Log.i(TAG, "Received RESPONCE: " + resp);
-//            Log.i(TAG, "Received RESPONCE_PAGE: " + respL);
+            Log.i(TAG, "Received ITEMS: " + items);
 
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch items", ioe);
         } catch (JSONException e) {
             Log.e(TAG, "Failed with GSON");
         }
-        return photos;
+        return items;
     }
 
-    private void parseItems(List<PhotoItem> items, JSONObject jsonBody) throws IOException, JSONException {
+    private void parseItems(List<GalleryItem> items, JSONObject jsonBody) throws IOException, JSONException {
         JSONObject photosJsonObject = jsonBody.getJSONObject("photos");
         JSONArray photoJsonArray = photosJsonObject.getJSONArray("photo");
         for (int i = 0; i < photoJsonArray.length(); i++) {
             JSONObject photoJsonObject = photoJsonArray.getJSONObject(i);
-            PhotoItem item = new PhotoItem();
+            GalleryItem item = new GalleryItem();
             item.setId(photoJsonObject.getString("id"));
             item.setTitle(photoJsonObject.getString("title"));
             if (!photoJsonObject.has("url_s")) {
@@ -108,23 +96,4 @@ public class FlickrFetcher {
             items.add(item);
         }
     }
-
-//    private class ResponseItem {
-//        @SerializedName("page")
-//        private String page;
-//        @SerializedName("pages")
-//        private String pages;
-//        @SerializedName("perpage")
-//        private String perpage;
-//        @SerializedName("total")
-//        private String total;
-//        @SerializedName("photo")
-//        ArrayList<PhotoItem> photo;
-//
-//        private ArrayList<PhotoItem> getPhotoList(){
-//            return photo;
-//        }
-//
-//        private String getPage(){return page;}
-//    }
 }
